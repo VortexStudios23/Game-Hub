@@ -1,0 +1,49 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Snake</title>
+<style>
+  :root{--bg:#071019;--panel:rgba(255,255,255,0.03);--glow:0 0 18px #0ff,0 0 30px #09f;}
+  body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#fff;display:flex;flex-direction:column;align-items:center;min-height:100vh;}
+  .container{max-width:900px;width:100%;padding:24px;}
+  header{padding:24px 0;text-align:center;}
+  h1{color:#0ff;text-shadow:var(--glow);margin:0;font-size:28px;}
+  .panel{background:var(--panel);padding:18px;border-radius:12px;box-shadow:var(--glow);margin-top:16px;}
+  button{cursor:pointer;border:none;padding:10px 14px;border-radius:8px;background:#0ff;color:#000;font-weight:700;box-shadow:var(--glow);}
+  a.back{display:inline-block;margin-top:12px;color:#9be;text-decoration:none;}
+  .row{display:flex;gap:12px;flex-wrap:wrap;}
+  input,select{padding:10px;border-radius:8px;border:none;outline:none;}
+  canvas{background:#000;border-radius:8px;display:block;margin:auto;box-shadow:var(--glow);}
+</style>
+</head><body>
+<div class="container"><header><h1>Snake</h1></header>
+<div class="panel" style="text-align:center">
+  <canvas id="c" width="400" height="400"></canvas>
+  <p style="color:#9be">Use arrow keys to move</p>
+  <a class="back" href="../index.html">Back to Hub</a>
+</div></div>
+<script>
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+const size=20,cols=canvas.width/size,rows=canvas.height/size;
+let snake=[{x:5,y:5}],dir={x:1,y:0},food={x:10,y:10},score=0,alive=true;
+document.addEventListener('keydown',e=>{if(e.key.includes('Arrow')){const d={ArrowUp:{x:0,y:-1},ArrowDown:{x:0,y:1},ArrowLeft:{x:-1,y:0},ArrowRight:{x:1,y:0}}[e.key];if(d&&(d.x!==-dir.x||d.y!==-dir.y))dir=d}});
+function rand(){return {x:Math.floor(Math.random()*cols),y:Math.floor(Math.random()*rows)};}
+function loop(){
+  if(!alive){ctx.fillStyle='#fff';ctx.fillText('Game Over - Refresh to play',60,200);return;}
+  const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+  if(head.x<0||head.x>=cols||head.y<0||head.y>=rows||snake.some(s=>s.x===head.x&&s.y===head.y)){alive=false;}
+  else{
+    snake.unshift(head);
+    if(head.x===food.x&&head.y===food.y){score++; food=rand();}
+    else snake.pop();
+  }
+  draw();
+}
+function draw(){
+  ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#0ff';ctx.fillRect(food.x*size+2,food.y*size+2,size-4,size-4);
+  ctx.fillStyle='#09f';
+  snake.forEach(s=>ctx.fillRect(s.x*size+2,s.y*size+2,size-4,size-4));
+  ctx.fillStyle='#9be';ctx.fillText('Score: '+score,10,10);
+}
+setInterval(loop,100);
+draw();
+</script></body></html>

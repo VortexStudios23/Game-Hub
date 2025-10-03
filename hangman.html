@@ -1,0 +1,32 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hangman</title>
+<style>
+  :root{--bg:#071019;--panel:rgba(255,255,255,0.03);--glow:0 0 18px #0ff,0 0 30px #09f;}
+  body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#fff;display:flex;flex-direction:column;align-items:center;min-height:100vh;}
+  .container{max-width:900px;width:100%;padding:24px;}
+  header{padding:24px 0;text-align:center;}
+  h1{color:#0ff;text-shadow:var(--glow);margin:0;font-size:28px;}
+  .panel{background:var(--panel);padding:18px;border-radius:12px;box-shadow:var(--glow);margin-top:16px;}
+  button{cursor:pointer;border:none;padding:10px 14px;border-radius:8px;background:#0ff;color:#000;font-weight:700;box-shadow:var(--glow);}
+  a.back{display:inline-block;margin-top:12px;color:#9be;text-decoration:none;}
+  .row{display:flex;gap:12px;flex-wrap:wrap;}
+  input,select{padding:10px;border-radius:8px;border:none;outline:none;}
+  canvas{background:#000;border-radius:8px;display:block;margin:auto;box-shadow:var(--glow);}
+</style>
+</head><body>
+<div class="container"><header><h1>Hangman</h1></header>
+<div class="panel" style="text-align:center">
+  <p id="word" style="letter-spacing:6px;font-size:22px"></p>
+  <div id="letters" style="margin-top:12px"></div>
+  <p id="msg" style="color:#9be"></p>
+  <button onclick="reset()">Reset</button>
+  <a class="back" href="../index.html">Back to Hub</a>
+</div></div>
+<script>
+const words=['vortex','neon','studio','glow','pixel'];
+let secret='',guessed=[];
+function reset(){secret=words[Math.floor(Math.random()*words.length)];guessed=[]; render();}
+function render(){document.getElementById('word').textContent=secret.split('').map(c=>guessed.includes(c)?c:'_').join(' '); const letters='abcdefghijklmnopqrstuvwxyz'.split('');const container=document.getElementById('letters');container.innerHTML='';letters.forEach(l=>{const b=document.createElement('button');b.textContent=l;b.style.margin='4px';b.onclick=()=>{if(guessed.includes(l))return;guessed.push(l);render(); check();};container.appendChild(b);});}
+function check(){if(secret.split('').every(c=>guessed.includes(c))) document.getElementById('msg').textContent='You won!';}
+reset();
+</script></body></html>

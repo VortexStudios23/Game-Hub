@@ -1,0 +1,39 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ping Pong</title>
+<style>
+  :root{--bg:#071019;--panel:rgba(255,255,255,0.03);--glow:0 0 18px #0ff,0 0 30px #09f;}
+  body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#fff;display:flex;flex-direction:column;align-items:center;min-height:100vh;}
+  .container{max-width:900px;width:100%;padding:24px;}
+  header{padding:24px 0;text-align:center;}
+  h1{color:#0ff;text-shadow:var(--glow);margin:0;font-size:28px;}
+  .panel{background:var(--panel);padding:18px;border-radius:12px;box-shadow:var(--glow);margin-top:16px;}
+  button{cursor:pointer;border:none;padding:10px 14px;border-radius:8px;background:#0ff;color:#000;font-weight:700;box-shadow:var(--glow);}
+  a.back{display:inline-block;margin-top:12px;color:#9be;text-decoration:none;}
+  .row{display:flex;gap:12px;flex-wrap:wrap;}
+  input,select{padding:10px;border-radius:8px;border:none;outline:none;}
+  canvas{background:#000;border-radius:8px;display:block;margin:auto;box-shadow:var(--glow);}
+</style>
+</head><body>
+<div class="container"><header><h1>Ping Pong</h1></header>
+<div class="panel" style="text-align:center">
+  <canvas id="c" width="600" height="300"></canvas>
+  <p style="color:#9be">Use mouse to move your paddle</p>
+  <a class="back" href="../index.html">Back to Hub</a>
+</div></div>
+<script>
+const c=document.getElementById('c'),ctx=c.getContext('2d');
+let paddle={x:10,y:120,w:10,h:60},ball={x:300,y:150,vx:4,vy:3,r:8},score=0;
+c.addEventListener('mousemove',e=>{const rect=c.getBoundingClientRect();paddle.y=e.clientY-rect.top-paddle.h/2;});
+function loop(){
+  ball.x+=ball.vx;ball.y+=ball.vy;
+  if(ball.y<0||ball.y>c.height)ball.vy*=-1;
+  if(ball.x>c.width){ball.x=300;ball.y=150;ball.vx*=-1;score=0;}
+  if(ball.x-ball.r<paddle.x+paddle.w && ball.y>paddle.y && ball.y<paddle.y+paddle.h){ball.vx*=-1;score++;}
+  ctx.fillStyle='#000';ctx.fillRect(0,0,c.width,c.height);
+  ctx.fillStyle='#0ff';ctx.fillRect(paddle.x,paddle.y,paddle.w,paddle.h);
+  ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#9be';ctx.fillText('Score: '+score,10,10);
+  requestAnimationFrame(loop);
+}
+loop();
+</script></body></html>

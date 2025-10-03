@@ -1,0 +1,29 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Typing Test</title>
+<style>
+  :root{--bg:#071019;--panel:rgba(255,255,255,0.03);--glow:0 0 18px #0ff,0 0 30px #09f;}
+  body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#fff;display:flex;flex-direction:column;align-items:center;min-height:100vh;}
+  .container{max-width:900px;width:100%;padding:24px;}
+  header{padding:24px 0;text-align:center;}
+  h1{color:#0ff;text-shadow:var(--glow);margin:0;font-size:28px;}
+  .panel{background:var(--panel);padding:18px;border-radius:12px;box-shadow:var(--glow);margin-top:16px;}
+  button{cursor:pointer;border:none;padding:10px 14px;border-radius:8px;background:#0ff;color:#000;font-weight:700;box-shadow:var(--glow);}
+  a.back{display:inline-block;margin-top:12px;color:#9be;text-decoration:none;}
+  .row{display:flex;gap:12px;flex-wrap:wrap;}
+  input,select{padding:10px;border-radius:8px;border:none;outline:none;}
+  canvas{background:#000;border-radius:8px;display:block;margin:auto;box-shadow:var(--glow);}
+</style>
+</head><body>
+<div class="container"><header><h1>Typing Speed Test (10s)</h1></header>
+<div class="panel" style="text-align:center">
+  <p id="quote">The quick brown fox jumps over the lazy dog</p>
+  <input id="input" placeholder="Start typing...">
+  <p id="res" style="color:#9be"></p>
+  <button onclick="start()">Start 10s</button>
+  <a class="back" href="../index.html">Back to Hub</a>
+</div></div>
+<script>
+let timer,started=false;
+function start(){document.getElementById('input').value='';document.getElementById('res').textContent=''; started=true; let t=10; document.getElementById('res').textContent='Time: '+t; timer=setInterval(()=>{t--;document.getElementById('res').textContent='Time: '+t; if(t<=0){clearInterval(timer);calc();}},1000);}
+function calc(){const txt=document.getElementById('input').value.trim();const words=txt? txt.split(/\s+/).length:0; document.getElementById('res').textContent='WPM: '+words*6;}
+</script></body></html>

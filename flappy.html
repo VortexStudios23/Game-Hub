@@ -1,0 +1,41 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flappy</title>
+<style>
+  :root{--bg:#071019;--panel:rgba(255,255,255,0.03);--glow:0 0 18px #0ff,0 0 30px #09f;}
+  body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#fff;display:flex;flex-direction:column;align-items:center;min-height:100vh;}
+  .container{max-width:900px;width:100%;padding:24px;}
+  header{padding:24px 0;text-align:center;}
+  h1{color:#0ff;text-shadow:var(--glow);margin:0;font-size:28px;}
+  .panel{background:var(--panel);padding:18px;border-radius:12px;box-shadow:var(--glow);margin-top:16px;}
+  button{cursor:pointer;border:none;padding:10px 14px;border-radius:8px;background:#0ff;color:#000;font-weight:700;box-shadow:var(--glow);}
+  a.back{display:inline-block;margin-top:12px;color:#9be;text-decoration:none;}
+  .row{display:flex;gap:12px;flex-wrap:wrap;}
+  input,select{padding:10px;border-radius:8px;border:none;outline:none;}
+  canvas{background:#000;border-radius:8px;display:block;margin:auto;box-shadow:var(--glow);}
+</style>
+</head><body>
+<div class="container"><header><h1>Flappy Clone</h1></header>
+<div class="panel" style="text-align:center">
+  <canvas id="c" width="400" height="400"></canvas>
+  <p style="color:#9be">Click or press space to flap</p>
+  <a class="back" href="../index.html">Back to Hub</a>
+</div></div>
+<script>
+const c=document.getElementById('c'),ctx=c.getContext('2d');
+let bird={x:80,y:200,vy:0},pipes=[],tick=0,alive=true;
+document.addEventListener('keydown',e=>{if(e.code==='Space')flap();});c.addEventListener('click',flap);
+function flap(){bird.vy=-6;}
+function loop(){
+  if(!alive){ctx.fillStyle='#fff';ctx.fillText('Game Over - Refresh',120,200);return;}
+  bird.vy+=0.35;bird.y+=bird.vy;
+  if(++tick%100===0){pipes.push({x:400,h:100+Math.random()*150});}
+  ctx.fillStyle='#000';ctx.fillRect(0,0,c.width,c.height);
+  ctx.fillStyle='#0ff';ctx.fillRect(bird.x, bird.y, 16,16);
+  for(let p of pipes){p.x-=2; ctx.fillStyle='#09f'; ctx.fillRect(p.x,0,40,p.h); ctx.fillRect(p.x,p.h+120,40,400);}
+  if(bird.y<0||bird.y>c.height)alive=false;
+  for(let p of pipes) if(bird.x+16>p.x && bird.x<p.x+40 && (bird.y<p.h || bird.y>p.h+120)) alive=false;
+  ctx.fillStyle='#9be';ctx.fillText('Score: '+Math.max(0,Math.floor(tick/100)),10,10);
+  requestAnimationFrame(loop);
+}
+loop();
+</script></body></html>

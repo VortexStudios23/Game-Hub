@@ -1,0 +1,30 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Minesweeper</title>
+<style>
+  :root{--bg:#071019;--panel:rgba(255,255,255,0.03);--glow:0 0 18px #0ff,0 0 30px #09f;}
+  body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#fff;display:flex;flex-direction:column;align-items:center;min-height:100vh;}
+  .container{max-width:900px;width:100%;padding:24px;}
+  header{padding:24px 0;text-align:center;}
+  h1{color:#0ff;text-shadow:var(--glow);margin:0;font-size:28px;}
+  .panel{background:var(--panel);padding:18px;border-radius:12px;box-shadow:var(--glow);margin-top:16px;}
+  button{cursor:pointer;border:none;padding:10px 14px;border-radius:8px;background:#0ff;color:#000;font-weight:700;box-shadow:var(--glow);}
+  a.back{display:inline-block;margin-top:12px;color:#9be;text-decoration:none;}
+  .row{display:flex;gap:12px;flex-wrap:wrap;}
+  input,select{padding:10px;border-radius:8px;border:none;outline:none;}
+  canvas{background:#000;border-radius:8px;display:block;margin:auto;box-shadow:var(--glow);}
+</style>
+</head><body>
+<div class="container"><header><h1>Minesweeper (6x6)</h1></header>
+<div class="panel" style="text-align:center">
+  <div id="grid" style="display:grid;grid-template-columns:repeat(6,40px);gap:6px;justify-content:center"></div>
+  <p id="msg" style="color:#9be"></p>
+  <a class="back" href="../index.html">Back to Hub</a>
+</div></div>
+<script>
+const grid=document.getElementById('grid'),msg=document.getElementById('msg');
+const size=6,cells=[];let mines=new Set();
+function init(){grid.innerHTML='';cells.length=0;mines=new Set();while(mines.size<6)mines.add(Math.floor(Math.random()*size*size));for(let i=0;i<size*size;i++){const b=document.createElement('div');b.style.cssText='width:40px;height:40px;background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center;border-radius:6px';b.dataset.i=i;b.onclick=()=>open(i);grid.appendChild(b);cells.push(b);}msg.textContent='Good luck';}
+function neighbors(i){const r=Math.floor(i/size),c=i%size,arr=[];for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){if(dr===0&&dc===0)continue;const nr=r+dr,nc=c+dc; if(nr>=0&&nr<size&&nc>=0&&nc<size)arr.push(nr*size+nc);}return arr;}
+function open(i){if(cells[i].textContent) return; if(mines.has(i)){cells[i].textContent='💥';cells[i].style.background='#500';msg.textContent='Game Over'; return;} const n=neighbors(i).filter(x=>mines.has(x)).length; cells[i].textContent=n? n : ''; cells[i].style.background='rgba(0,255,255,0.06)'; if(n===0) neighbors(i).forEach(open); if(cells.filter(c=>c.textContent!=='').length===size*size-mines.size) msg.textContent='You cleared the minefield!';}
+init();
+</script></body></html>
